@@ -4,12 +4,29 @@ module Api
         class PostsController < ApplicationController
 
             def index
-                posts = Post.order('created_at').page(params[:page]).per(25);
-                render json: {
-                    status: 'EXITOSO',
-                    message: 'Posts cargados',
-                    data: posts
-                }, status: :ok
+                
+                search1 = "%#{params[:title]}%"
+                search2 = "%#{params[:category]}%"
+
+                if search1 || search2
+                
+                    post = Post.where("title LIKE ? AND category LIKE ?", search1, search2)
+
+                    render json: {
+                        status: 'EXITOSO',
+                        message: 'Busqueda/s encontrada/s',
+                        data: post
+                    }, status: :ok
+
+                else
+
+                    posts = Post.order('created_at').page(params[:page]).per(25);
+                    render json: {
+                        status: 'EXITOSO',
+                        message: 'Posts cargados',
+                        data: posts
+                    }, status: :ok
+                end    
             end  
             
             def show
