@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   namespace 'api' do 
     namespace 'v1' do
       resources :posts
-      resources :users
+      resources :users, only: [:index, :create]
+      post "/login", to: "user#login"
+      get "/auto_login", to: "users#auto_login"
       #resources :categories 
     end
   end
