@@ -3,6 +3,9 @@ module Api
     module V1 
         class PostsController < ApplicationController
 
+            before_action :set_note, only: [:show, :update, :destroy]
+            before_action :authorized
+
             def index
                 
                 search1 = "%#{params[:title]}%"
@@ -20,7 +23,7 @@ module Api
 
                 else
 
-                    posts = Post.order('created_at').page(params[:page]).per(25);
+                    posts = Post.where(user_id: user.id).page(params[:page]).per(25);
                     render json: {
                         status: 'EXITOSO',
                         message: 'Posts cargados',
@@ -40,9 +43,12 @@ module Api
 
             def create
                 post = Post.new(character_params)
+                post.user_id = user.id 
+
                 if post.save
                     render json: {
                         status: 'Exitoso',
+                        location: post,
                         message: 'Post creado',
                         data: post
                     }, status: :ok

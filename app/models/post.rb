@@ -1,5 +1,6 @@
 class Post < ApplicationRecord
   belongs_to :user
+  #before_action :authorized
   #belongs_to :category
 
   validates :title, presence: true
